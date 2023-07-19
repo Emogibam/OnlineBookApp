@@ -1,5 +1,7 @@
 ﻿using DataSource.Entities;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,13 +9,14 @@ using System.Text;
 
 namespace DataSource.Context
 {
-    public class MyApplicationContext : DbContext
+    public class MyApplicationContext  : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
     {
         public DbSet<Book> Books { get; set; }
         public DbSet<Author> Authors { get; set; }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public MyApplicationContext(DbContextOptions<MyApplicationContext> options)
             : base(options)
         {
@@ -21,6 +24,8 @@ namespace DataSource.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<IdentityUserLogin<Guid>>().HasKey(l => new { l.LoginProvider, l.ProviderKey });
+
             modelBuilder.Entity<Book>(entity =>
             {
                 // Other configurations

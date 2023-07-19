@@ -14,10 +14,13 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.32" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.32" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DataSource\DataSource.csproj" />
+    <ProjectReference Include="..\Services\Services.csproj" />
   </ItemGroup>
 
 </Project>

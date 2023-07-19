@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Services.Configurations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,16 +32,21 @@ namespace OnlineBookApp
         {
             services.AddControllersWithViews();
             services.AddDbContext<MyApplicationContext>(options =>
-        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
-        b => b.MigrationsAssembly("OnlineBookApp")));
+       options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
-                .AddEntityFrameworkStores<MyApplicationContext>()
-                .AddDefaultTokenProviders();
+            services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
+            {
+                // Identity options configuration (if needed).
+            })
+            .AddEntityFrameworkStores<MyApplicationContext>()
+            .AddDefaultTokenProviders();
+
+            services.AddLogging(builder =>
+            {
+                builder.AddConsole(); 
+            });
 
 
-
-        
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,6 +61,8 @@ namespace OnlineBookApp
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+
+            app.UseMiddleware<RequestResponseLoggingMiddleware>();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
