@@ -32,11 +32,17 @@ namespace OnlineBookApp
         {
             services.AddControllersWithViews();
             services.AddDbContext<MyApplicationContext>(options =>
-       options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
+        b => b.MigrationsAssembly("OnlineBookApp") // Change to your migrations project name
+    ));
 
-            services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
+
+            services.AddIdentity<ApplicationUser, IdentityRole>(x =>
             {
-                // Identity options configuration (if needed).
+                x.Password.RequireUppercase = true;
+                x.Password.RequiredLength = 7;
+                x.Password.RequireDigit = false;
+                x.SignIn.RequireConfirmedEmail = true;
             })
             .AddEntityFrameworkStores<MyApplicationContext>()
             .AddDefaultTokenProviders();
